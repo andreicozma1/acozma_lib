@@ -4,10 +4,10 @@ from typing import Callable, List, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
+import process
+import utils
 from skimage import io, transform
 from skimage.util import img_as_float32, img_as_ubyte
-
-from lib572 import process, utils
 
 SMALL_SIZE = 8
 MEDIUM_SIZE = 10
