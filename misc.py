@@ -4,8 +4,6 @@ import cv2
 import numpy as np
 from skimage import filters
 
-import lib572
-
 
 def fake_blister(shape, axes, angle: int = 45):
     kernel = np.zeros(shape, dtype=np.float32)
