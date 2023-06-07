@@ -68,7 +68,7 @@ def apply(
     )
 
 
-def adjust(image, adjust_log=None, adjust_gamma=None, clip=None):
+def adjust(image, adjust_log=None, adjust_gamma=None, clip=None, **kwargs):
     if adjust_log is not None and adjust_log is not False:
         gain = 1 if adjust_log is True else adjust_log
         image = exposure.adjust_log(image, gain)

@@ -4,6 +4,7 @@ from typing import Callable, List, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
+import PIL
 from skimage import io, transform
 from skimage.util import img_as_float32, img_as_ubyte
 
@@ -23,16 +24,17 @@ plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 
 def read(
-    imgpath: str,
-    resize_width: int = 1024,
-    as_gray=True,
+    fname: str,
+    resize_width: int = None,
+    as_gray=False,
     as_ubyte: bool = False,
     apply_funcs: Union[List[Callable], Callable, None] = None,
     **kwargs,
 ):
-    img = io.imread(imgpath, as_gray=as_gray)
-    height = int(img.shape[0] * resize_width / img.shape[1])
-    img = transform.resize(img, (height, resize_width), anti_aliasing=True)
+    img = io.imread(fname, as_gray=as_gray)
+    if resize_width is not None:
+        height = int(img.shape[0] * resize_width / img.shape[1])
+        img = transform.resize(img, (height, resize_width), anti_aliasing=True)
     img = img_as_ubyte(img) if as_ubyte else img_as_float32(img)
     if apply_funcs is not None:
         img = process.apply(img, funcs=apply_funcs, **kwargs)
@@ -48,13 +50,14 @@ def show(
     cmap="gray",
     interpolation="antialiased",
     save_path: Union[str, None] = None,
+    size=4,
     **kwargs,
 ) -> None:
-    if isinstance(images, np.ndarray):
+    if isinstance(images, Union[np.ndarray, PIL.Image.Image]):
         images = [[images]]
-    elif isinstance(images[0], np.ndarray):
+    elif isinstance(images[0], Union[np.ndarray, PIL.Image.Image]):
         images = [images]
-    elif not isinstance(images[0][0], np.ndarray):
+    elif not isinstance(images[0][0], Union[np.ndarray, PIL.Image.Image]):
         raise ValueError("Invalid image type")
 
     if titles is not None:
@@ -74,7 +77,7 @@ def show(
     print(f"Plotting {num_rows}x{num_cols} images")
     print("=" * 80)
 
-    figsize = (num_cols * 4, num_rows * 4)
+    figsize = (num_cols * size, num_rows * size)
     fig, axs = plt.subplots(
         num_rows,
         num_cols,

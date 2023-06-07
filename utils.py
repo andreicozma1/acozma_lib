@@ -254,6 +254,6 @@ def print_metrics(metrics):
 
 
 def print_info(image, start=None):
-    info = f"min: {np.min(image):.3f} | max: {np.max(image):.3f}"
+    info = f"min: {np.min(image):.3f} | max: {np.max(image):.3f} | shape: {np.shape(image)}"
     print(f"{start or '':>10}: {info}")
     return info
