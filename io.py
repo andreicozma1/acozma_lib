@@ -47,6 +47,7 @@ def show(
     plot_title: Union[str, None] = None,
     show_hist: bool = False,
     vertical: bool = False,
+    grid: bool = False,
     cmap="gray",
     interpolation="antialiased",
     save_path: Union[str, None] = None,
@@ -68,8 +69,28 @@ def show(
         elif not isinstance(titles[0][0], str):
             raise ValueError("Invalid title type")
 
-    num_rows = len(images)
-    num_cols = len(images[0])
+    if not grid:
+        num_rows = len(images)
+        num_cols = len(images[0])
+    else:
+        # flatten images
+        images = list(itertools.chain.from_iterable(images))
+
+        # make both into a 2D grid
+        num_images = len(images)
+        # make into a square grid if possible but always show all images
+        num_rows = int(np.sqrt(num_images))
+        num_cols = int(np.ceil(num_images / num_rows))
+
+        if num_rows * num_cols < num_images:
+            raise ValueError("Error encountered while constructing grid of images")
+
+        images = [images[i : i + num_cols] for i in range(0, num_images, num_cols)]
+
+        if titles is not None:
+            titles = list(itertools.chain.from_iterable(titles))
+            titles = [titles[i : i + num_cols] for i in range(0, num_images, num_cols)]
+
     if vertical:
         num_rows, num_cols = num_cols, num_rows
 
@@ -105,7 +126,10 @@ def show(
                 if i < len(titles) and j < len(titles[i])
                 else f"image[{i}][{j}]"
             )
-        image = images[j][i] if vertical else images[i][j]
+        try:
+            image = images[j][i] if vertical else images[i][j]
+        except IndexError:
+            continue
         utils.print_info(image, title)
 
         if num_rows == 1 and num_cols == 1:
