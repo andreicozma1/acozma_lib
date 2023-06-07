@@ -43,8 +43,8 @@ def read(
 
 def show(
     images: Union[np.ndarray, List[np.ndarray], List[List[np.ndarray]]],
-    titles: Union[str, List[str], List[List[str]], None] = None,
-    plot_title: Union[str, None] = None,
+    captions: Union[str, List[str], List[List[str]], None] = None,
+    title: Union[str, None] = None,
     show_hist: bool = False,
     vertical: bool = False,
     grid: bool = False,
@@ -59,15 +59,15 @@ def show(
     elif isinstance(images[0], Union[np.ndarray, PIL.Image.Image]):
         images = [images]
     elif not isinstance(images[0][0], Union[np.ndarray, PIL.Image.Image]):
-        raise ValueError("Invalid image type")
+        raise ValueError(f"Invalid image type: {type(images[0][0])}")
 
-    if titles is not None:
-        if isinstance(titles, str):
-            titles = [[titles]]
-        elif isinstance(titles[0], str):
-            titles = [titles]
-        elif not isinstance(titles[0][0], str):
-            raise ValueError("Invalid title type")
+    if captions is not None:
+        if isinstance(captions, str):
+            captions = [[captions]]
+        elif isinstance(captions[0], str):
+            captions = [captions]
+        elif not isinstance(captions[0][0], str):
+            raise ValueError(f"Invalid caption type: {type(captions[0][0])}")
 
     if not grid:
         num_rows = len(images)
@@ -87,9 +87,11 @@ def show(
 
         images = [images[i : i + num_cols] for i in range(0, num_images, num_cols)]
 
-        if titles is not None:
-            titles = list(itertools.chain.from_iterable(titles))
-            titles = [titles[i : i + num_cols] for i in range(0, num_images, num_cols)]
+        if captions is not None:
+            captions = list(itertools.chain.from_iterable(captions))
+            captions = [
+                captions[i : i + num_cols] for i in range(0, num_images, num_cols)
+            ]
 
     if vertical:
         num_rows, num_cols = num_cols, num_rows
@@ -110,27 +112,27 @@ def show(
     )
 
     for i, j in itertools.product(range(num_rows), range(num_cols)):
-        title = None
-        if titles is None:
-            title = f"image[{i}][{j}]"
+        caption = None
+        if captions is None:
+            caption = f"image[{i}][{j}]"
 
         elif vertical:
-            title = (
-                titles[j][i]
-                if j < len(titles) and i < len(titles[j])
+            caption = (
+                captions[j][i]
+                if j < len(captions) and i < len(captions[j])
                 else f"image[{i}][{j}]"
             )
         else:
-            title = (
-                titles[i][j]
-                if i < len(titles) and j < len(titles[i])
+            caption = (
+                captions[i][j]
+                if i < len(captions) and j < len(captions[i])
                 else f"image[{i}][{j}]"
             )
         try:
             image = images[j][i] if vertical else images[i][j]
         except IndexError:
             continue
-        utils.print_info(image, title)
+        utils.print_info(image, caption)
 
         if num_rows == 1 and num_cols == 1:
             ax = axs
@@ -148,11 +150,11 @@ def show(
         else:
             ax.imshow(np.squeeze(image), cmap=cmap, interpolation=interpolation)
 
-        ax.set_title(title)
+        ax.set_title(caption)
         ax.set_axis_off()
 
-    if plot_title != None:
-        plt.suptitle(plot_title)
+    if title != None:
+        plt.suptitle(title)
 
     if save_path is not None:
         dir_path = os.path.dirname(save_path).strip()
