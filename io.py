@@ -1,10 +1,10 @@
 import itertools
 import os
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Callable, List, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-import PIL
+from PIL import Image
 from skimage import io, transform
 from skimage.util import img_as_float32, img_as_ubyte
 
@@ -21,6 +21,8 @@ plt.rc("xtick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("ytick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
 plt.rc("legend", fontsize=MEDIUM_SIZE)  # legend fontsize
 plt.rc("figure", titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+IMAGE_TYPES = Union[np.ndarray, Image.Image]
 
 
 def read(
@@ -42,7 +44,7 @@ def read(
 
 
 def show(
-    images: Union[np.ndarray, List[np.ndarray], List[List[np.ndarray]]],
+    images: Union[IMAGE_TYPES, List[IMAGE_TYPES], List[List[IMAGE_TYPES]]],
     captions: Union[str, List[str], List[List[str]], None] = None,
     title: Union[str, None] = None,
     show_hist: bool = False,
@@ -54,11 +56,11 @@ def show(
     size=4,
     **kwargs,
 ) -> None:
-    if isinstance(images, Union[np.ndarray, PIL.Image.Image]):
+    if isinstance(images, IMAGE_TYPES):
         images = [[images]]
-    elif isinstance(images[0], Union[np.ndarray, PIL.Image.Image]):
+    elif isinstance(images[0], IMAGE_TYPES):
         images = [images]
-    elif not isinstance(images[0][0], Union[np.ndarray, PIL.Image.Image]):
+    elif not isinstance(images[0][0], IMAGE_TYPES):
         raise ValueError(f"Invalid image type: {type(images[0][0])}")
 
     if captions is not None:
