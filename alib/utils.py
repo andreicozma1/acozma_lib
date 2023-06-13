@@ -97,6 +97,7 @@ def normalize_filenames(dpath: str, dry_run: bool = True):
     The longest repeating substring occuring in the set of files is also removed from the file names. This is useful when certain files have a common prefix or suffix.
     By default, this function is run in dry run mode to prevent accidental renaming of files. To rename the files after verifying the output, set `dry_run=False`.
     """
+    min_len = 5
     dry_run_msg = (
         "DRY RUN: Please verify the output and set `dry_run=False` to rename the files"
     )
@@ -115,7 +116,9 @@ def normalize_filenames(dpath: str, dry_run: bool = True):
             print(f"Extension: `{extension}`")
             files_target = files_source.copy()
             files_target = get_normalized_filename(files_target, has_extension=False)
-            files_target = remove_longest_repeating_substring(files_target, min_len=5)
+            files_target = remove_longest_repeating_substring(
+                files_target, min_len=min_len
+            )
             if files_source == files_target:
                 print("\tSkip: No changes to be made")
                 continue
