@@ -8,7 +8,7 @@ from PIL import Image
 from skimage import io, transform
 from skimage.util import img_as_float32, img_as_ubyte
 
-from andrei_lib import process, utils
+from . import processing, utils
 
 SMALL_SIZE = 8
 MEDIUM_SIZE = 10
@@ -39,7 +39,7 @@ def read(
         img = transform.resize(img, (height, resize_width), anti_aliasing=True)
     img = img_as_ubyte(img) if as_ubyte else img_as_float32(img)
     if apply_funcs is not None:
-        img = process.apply(img, funcs=apply_funcs, **kwargs)
+        img = processing.apply(img, funcs=apply_funcs, **kwargs)
     return img
 
 
@@ -145,7 +145,7 @@ def show(
         else:
             ax = axs[i][j]
 
-        image = process.adjust(image, **kwargs)
+        image = processing.adjust(image, **kwargs)
 
         if show_hist:
             ax.hist(image.ravel(), bins=256)
