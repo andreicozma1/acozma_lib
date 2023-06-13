@@ -22,9 +22,13 @@ def get_normalized_filename(fname: str, has_extension: bool) -> str:
     map_substitutions = {
         " ": "_",
         ".": "-",
-        "'": "",
-        '"': "",
     }
+    # add every character in `string.punctuation` to the map if it is not already in the map
+    for char in string.punctuation:
+        if char not in map_substitutions and char not in list(
+            map_substitutions.values()
+        ):
+            map_substitutions[char] = ""
 
     if has_extension:
         fname_noext, extension = os.path.splitext(fname)
@@ -34,7 +38,11 @@ def get_normalized_filename(fname: str, has_extension: bool) -> str:
     for char, replacement in map_substitutions.items():
         fname_noext = fname_noext.replace(char, replacement)
     # replace multiple underscores with a single underscore
-    fname_noext = re.sub(r"_{2,}", "_", fname_noext)
+    for char in list(map_substitutions.values()):
+        # fname_noext = re.sub(r"_{2,}", "_", fname_noext)
+        if len(char) == 0:
+            continue
+        fname_noext = re.sub(rf"{char}{{2,}}", char, fname_noext)
 
     # finally, strip away any leading or trailing characters that are values in `map_substitutions`
     substitution_string = "".join(map_substitutions.values())
@@ -107,7 +115,11 @@ def normalize_filenames(dpath: str, dry_run: bool = True):
             print(f"Extension: `{extension}`")
             files_target = files_source.copy()
             files_target = get_normalized_filename(files_target, has_extension=False)
-            files_target = remove_longest_repeating_substring(files_target)
+            files_target = remove_longest_repeating_substring(files_target, min_len=5)
+            if files_source == files_target:
+                print("\tSkip: No changes to be made")
+                continue
+
             for fname_source, fname_target in zip(files_source, files_target):
                 fpath_source = os.path.join(root, f"{fname_source}{extension}")
                 fpath_target = os.path.join(root, f"{fname_target}{extension}")
