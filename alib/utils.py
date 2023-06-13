@@ -75,7 +75,7 @@ def get_map_ext_to_fpath_from_path(dpath: str, recursive=True, **kwargs) -> dict
     files = []
     # Walk the directory tree and add files to the list
     if recursive:
-        for root, dirs, files_ in os.walk(dpath):
+        for root, _, files_ in os.walk(dpath):
             for file in files_:
                 fullpath = os.path.join(root, file)
                 files.append(fullpath)
