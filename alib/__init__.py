@@ -1,1 +1,1 @@
-from . import decorators, image, string, utils
+from . import decorators, image, string, utils, hf
