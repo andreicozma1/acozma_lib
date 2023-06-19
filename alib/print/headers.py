@@ -1,36 +1,38 @@
-from ..utils import in_notebook
+from typing import Union
 
-if in_notebook():
-    from IPython.display import Markdown, display
-
-
-def _print_with_header(*values, level=1, **kwargs):
-    header = "#" * level
-    if in_notebook():
-        display(Markdown(f"{header} {' '.join(map(str, values))}"))
-    else:
-        print(header, *values, **kwargs)
+sep_sz_map = {
+    "xs": 20,
+    "sm": 40,
+    "md": 60,
+    "lg": 80,
+    "xl": 100,
+}
 
 
-def h1(*values, **kwargs):
-    _print_with_header(*values, level=1, **kwargs)
+def _print_with_separator(*values, sep: str, sz: Union[str, int] = "lg", **kwargs):
+    if isinstance(sz, str):
+        sz = sep_sz_map[sz]
+    print(sep * sz)
+    if values:
+        print(*values, **kwargs)
+        print(sep * sz)
 
 
-def h2(*values, **kwargs):
-    _print_with_header(*values, level=2, **kwargs)
+def hr1(*values, **kwargs):
+    _print_with_separator(*values, sep="#", **kwargs)
 
 
-def h3(*values, **kwargs):
-    _print_with_header(*values, level=3, **kwargs)
+def hr2(*values, **kwargs):
+    _print_with_separator(*values, sep="=", **kwargs)
 
 
-def h4(*values, **kwargs):
-    _print_with_header(*values, level=4, **kwargs)
+def hr3(*values, **kwargs):
+    _print_with_separator(*values, sep="~", **kwargs)
 
 
-def h5(*values, **kwargs):
-    _print_with_header(*values, level=5, **kwargs)
+def hr4(*values, **kwargs):
+    _print_with_separator(*values, sep="-", **kwargs)
 
 
-def h6(*values, **kwargs):
-    _print_with_header(*values, level=6, **kwargs)
+def hr5(*values, **kwargs):
+    _print_with_separator(*values, sep="*", **kwargs)
