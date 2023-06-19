@@ -7,6 +7,19 @@ from .decorators import listify
 from .string import remove_longest_repeating_substring
 
 
+def in_notebook():
+    try:
+        from IPython import get_ipython
+
+        if "IPKernelApp" not in get_ipython().config:  # pragma: no cover
+            return False
+    except ImportError:
+        return False
+    except AttributeError:
+        return False
+    return True
+
+
 @listify
 def get_normalized_filename(fname: str, has_extension: bool) -> str:
     """
