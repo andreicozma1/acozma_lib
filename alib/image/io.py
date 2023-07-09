@@ -103,7 +103,7 @@ def show(
     print("=" * 80)
 
     figsize = (num_cols * size, num_rows * size)
-    fig, axs = plt.subplots(
+    _, axs = plt.subplots(
         num_rows,
         num_cols,
         sharex=True,
@@ -130,11 +130,6 @@ def show(
                 if i < len(captions) and j < len(captions[i])
                 else f"image[{i}][{j}]"
             )
-        try:
-            image = images[j][i] if vertical else images[i][j]
-        except IndexError:
-            continue
-        utils.print_info(image, caption)
 
         if num_rows == 1 and num_cols == 1:
             ax = axs
@@ -145,12 +140,20 @@ def show(
         else:
             ax = axs[i][j]
 
+        try:
+            image = images[j][i] if vertical else images[i][j]
+        except IndexError:
+            continue
+        utils.print_info(image, caption)
+
         image = processing.adjust(image, **kwargs)
 
         if show_hist:
             ax.hist(image.ravel(), bins=256)
         else:
             ax.imshow(np.squeeze(image), cmap=cmap, interpolation=interpolation)
+
+        ax.axis("image")
 
         ax.set_title(caption)
         ax.set_axis_off()
