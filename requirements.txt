@@ -1,5 +1,6 @@
-scikit-image
+numpy
+pillow
 opencv-python
+scikit-image
 matplotlib
 tabulate
-pprint
