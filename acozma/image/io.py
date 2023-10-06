@@ -1,6 +1,6 @@
 import itertools
 import os
-from typing import Callable, List, Union
+from typing import Callable, List, Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,7 +27,7 @@ IMAGE_TYPES = Union[np.ndarray, Image.Image]
 
 def read(
     fname: str,
-    resize_width: int = None,
+    resize_width: Optional[int] = None,
     as_gray=False,
     as_ubyte: bool = False,
     apply_funcs: Union[List[Callable], Callable, None] = None,
