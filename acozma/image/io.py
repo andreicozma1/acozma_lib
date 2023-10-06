@@ -43,7 +43,7 @@ def read(
     return img
 
 
-def show(
+def plot(
     images: Union[IMAGE_TYPES, List[IMAGE_TYPES], List[List[IMAGE_TYPES]]],
     captions: Union[str, List[str], List[List[str]], None] = None,
     title: Union[str, None] = None,
