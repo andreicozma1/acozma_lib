@@ -23,7 +23,6 @@ def canny_colorgrid(image: Image.Image, grid_size=5):
     return _canny_colorgrid_post(image_canny, image_colorgrid)
 
 
-@processor
 def rand_canny_colorgrid(image: Image.Image):
     image_canny, canny_params = rand_canny(image)
     image_colorgrid, colorgrid_params = rand_colorgrid(image)

@@ -1,7 +1,10 @@
 import numpy as np
 from PIL import Image, ImageFilter
 
+from acozma.image.processors.utils import processor
 
+
+@processor
 def blur(image: Image.Image, radius: int = 5):
     blur_funcs = [
         ImageFilter.GaussianBlur,
