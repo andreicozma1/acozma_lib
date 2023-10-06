@@ -1,9 +1,5 @@
-# andrei_lib
+# Andrei's Utility Library
 
-Work-in-Progress
+Library of utilities for my personal use.
 
-Add the main directory to the `PYTHONPATH` in your rc file:
-
-```bash
-export PYTHONPATH=$HOME/GitHub/andrei_lib${PYTHONPATH:+:${PYTHONPATH}}
-```
+Work-in-progress.
