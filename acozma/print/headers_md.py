@@ -1,13 +1,12 @@
 from ..utils import in_notebook
 
-if in_notebook():
-    from IPython.display import Markdown, display
-
 
 def _print_with_header(*values, level=1, **kwargs):
     header = "#" * level
     if in_notebook():
-        display(Markdown(f"{header} {' '.join(map(str, values))}"))
+        from IPython.core.display import display_markdown
+
+        display_markdown(f"{header} {' '.join(map(str, values))}")
     else:
         print(header, *values, **kwargs)
 
@@ -38,6 +37,8 @@ def h6(*values, **kwargs):
 
 def hr():
     if in_notebook():
-        display(Markdown("---"))
+        from IPython.core.display import display_markdown
+
+        display_markdown("---")
     else:
         print("---")
