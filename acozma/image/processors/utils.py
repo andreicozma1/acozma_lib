@@ -17,3 +17,9 @@ def processor(func):
         return res
 
     return wrapper
+
+
+def params_to_str(params: dict):
+    return ",".join(
+        f"{k}={round(v, 2) if isinstance(v, float) else v}" for k, v in params.items()
+    )
