@@ -7,7 +7,8 @@ from acozma.image.processors.utils import processor
 
 
 @processor
-def contour(image: Image.Image):
+def contour(image: Image.Image, level: float | list[float] | None = None):
+    levels = level if isinstance(level, list) else [level]
     image = image.convert("L")
     image = np.array(image)
     image = img_as_float(image)
@@ -16,8 +17,15 @@ def contour(image: Image.Image):
     # image = exposure.equalize_hist(image)
     # image = exposure.equalize_adapthist(image, clip_limit=0.03)
 
-    levels = [0.1, 0.2, 0.3, 0.4, 0.5]
-    contours = [measure.find_contours(image, level) for level in levels]
+    contours = [
+        measure.find_contours(
+            image,
+            l,
+            # fully_connected="low",
+            # positive_orientation="low",
+        )
+        for l in levels
+    ]
     image = np.zeros_like(image)
     for contour in contours:
         for c in contour:
@@ -34,7 +42,11 @@ def contour(image: Image.Image):
 def rand_contour(image: Image.Image):
     # TODO: Implement random contours
 
-    params = {}
+    num_levels = np.random.randint(1, 5)
+
+    params = {
+        "level": list(np.random.uniform(0.0, 1.0, size=num_levels)),
+    }
 
     res = contour(image, **params)
 
