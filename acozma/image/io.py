@@ -104,6 +104,8 @@ def plot(
         img = images[j][i] if vertical else images[i][j]
         if img is None:
             continue
+        # TODO: implement better way to get dimensions across types
+        img = np.array(img)
         heights.append(img.shape[0])
         widths.append(img.shape[1])
 
