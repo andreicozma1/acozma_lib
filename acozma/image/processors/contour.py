@@ -7,7 +7,7 @@ from acozma.image.processors.utils import processor
 
 
 @processor
-def contour(image: Image.Image, level: float | list[float] | None = None):
+def contour(image: Image.Image, level: float | list[float] | None = None, **kwargs):
     levels = level if isinstance(level, list) else [level]
     image = image.convert("L")
     image = np.array(image)
@@ -40,8 +40,6 @@ def contour(image: Image.Image, level: float | list[float] | None = None):
 
 
 def rand_contour(image: Image.Image):
-    # TODO: Implement random contours
-
     num_levels = np.random.randint(1, 5)
 
     params = {

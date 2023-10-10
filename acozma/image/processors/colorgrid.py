@@ -17,6 +17,8 @@ def colorgrid(
     grid_size: int = 5,
     downsample=Image.BICUBIC,
     upsample=Image.NEAREST,
+    shuffle: bool = False,
+    **kwargs,
 ):
     assert grid_size >= 5, "grid_size must be >= 5"
 
@@ -29,6 +31,11 @@ def colorgrid(
     # BOX: Literal[4]
     # HAMMING: Literal[5]
     image = image.resize((grid_size, grid_size), resample=downsample)
+    # shuffle pixels
+    if shuffle:
+        pixels = np.array(image)
+        np.random.shuffle(pixels)
+        image = Image.fromarray(pixels)
     image = image.resize((width, height), resample=upsample)
     return image.convert("RGB")
 

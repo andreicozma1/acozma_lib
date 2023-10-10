@@ -6,20 +6,30 @@ from acozma.image.processors.utils import processor
 
 
 def _canny_colorgrid_post(image_bg: Image.Image, image_fg: Image.Image):
-    image_bg_inv = ImageOps.invert(image_bg.convert("L"))
-    image_bg_inv = ImageEnhance.Contrast(image_bg_inv).enhance(factor=20)
+    image_bg = image_bg.convert("RGB")
+    image_fg = image_fg.convert("RGB")
 
-    image_fg_new = ImageChops.multiply(image_fg.convert("L"), image_bg_inv)
+    image_bg_inv = ImageOps.invert(image_bg)
+    image_bg_inv = ImageEnhance.Contrast(image_bg_inv).enhance(factor=10)
 
-    return ImageChops.composite(image_fg_new, image_bg, image_fg.convert("L")).convert(
-        "RGB"
+    image_fg_new = ImageChops.multiply(image_fg, image_bg_inv)
+
+    img_out = ImageChops.composite(
+        image_bg, image_fg_new, ImageOps.invert(image_fg.convert("1"))
     )
+    return img_out
 
 
 @processor
-def canny_colorgrid(image: Image.Image, grid_size=5):
-    image_bg = colorgrid(image, grid_size=grid_size)
-    image_fg = canny(image)
+def canny_colorgrid(
+    image: Image.Image,
+    color_image: Image.Image | None = None,
+    **kwargs,
+):
+    if color_image is None:
+        color_image = image
+    image_bg = colorgrid(color_image, **kwargs)
+    image_fg = canny(image, **kwargs)
 
     return _canny_colorgrid_post(image_bg, image_fg)
 

@@ -5,7 +5,7 @@ from acozma.image.processors.utils import processor
 
 
 @processor
-def blur(image: Image.Image, radius: int = 5):
+def blur(image: Image.Image, radius: int = 5, **kwargs):
     blur_funcs = [
         ImageFilter.GaussianBlur,
         ImageFilter.BoxBlur,

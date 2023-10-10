@@ -7,7 +7,7 @@ from acozma.image.processors.utils import processor
 
 
 @processor
-def hog(image: Image.Image, orientations: int = 4, pixels_per_cell: int = 9):
+def hog(image: Image.Image, orientations: int = 4, pixels_per_cell: int = 9, **kwargs):
     # histogram of oriented gradients
     assert orientations >= 4, "orientations must be at least 4"
     assert pixels_per_cell >= 5, "pixels_per_cell must be at least 5"

@@ -7,20 +7,19 @@ from acozma.image.processors.utils import processor
 
 
 def _contour_colorgrid_post(image_bg: Image.Image, image_fg: Image.Image):
-    image_bg_inv = ImageOps.invert(image_bg.convert("L"))
-    image_bg_inv = ImageEnhance.Contrast(image_bg_inv).enhance(factor=20)
+    image_bg_inv = ImageOps.invert(image_bg)
+    # image_bg_inv = ImageEnhance.Contrast(image_bg_inv).enhance(factor=20)
 
-    image_fg_new = ImageChops.multiply(image_fg.convert("L"), image_bg_inv)
+    image_fg_new = ImageChops.multiply(image_bg_inv, image_fg)
 
-    return ImageChops.composite(image_fg_new, image_bg, image_fg.convert("L")).convert(
-        "RGB"
-    )
+    img_out = ImageChops.composite(image_fg_new, image_bg, image_fg.convert("L"))
+    return image_bg_inv.convert("RGB")
 
 
 @processor
-def contour_colorgrid(image: Image.Image, grid_size=5):
-    image_bg = colorgrid(image, grid_size=grid_size)
-    image_fg = contour(image)
+def contour_colorgrid(image: Image.Image, **kwargs):
+    image_bg = colorgrid(image, **kwargs)
+    image_fg = contour(image, **kwargs)
 
     return _contour_colorgrid_post(image_bg, image_fg)
 

@@ -8,7 +8,7 @@ from acozma.image.processors.utils import processor
 
 
 @processor
-def entropy(img, radius: int = 5):
+def entropy(img, radius: int = 5, **kwargs):
     assert radius >= 3, "radius must be non-negative"
 
     img = np.array(img)
