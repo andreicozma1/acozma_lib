@@ -30,26 +30,23 @@ def read(
     resize_width: Optional[int] = None,
     as_gray=False,
     as_ubyte: bool = False,
-    apply_funcs: Union[List[Callable], Callable, None] = None,
-    **kwargs,
 ):
     img = io.imread(fname, as_gray=as_gray)
     if resize_width is not None:
         height = int(img.shape[0] * resize_width / img.shape[1])
         img = transform.resize(img, (height, resize_width), anti_aliasing=True)
     img = img_as_ubyte(img) if as_ubyte else img_as_float32(img)
-    if apply_funcs is not None:
-        img = processing.apply(img, funcs=apply_funcs, **kwargs)
     return img
 
 
 def plot(
     images: Union[IMAGE_TYPES, List[IMAGE_TYPES], List[List[IMAGE_TYPES]]],
     captions: Union[str, List[str], List[List[str]], None] = None,
-    title: Union[str, None] = None,
+    suptitle: Union[str, None] = None,
     show_hist: bool = False,
     vertical: bool = False,
     grid: bool = False,
+    figsize=(5, 5),
     cmap="gray",
     interpolation="antialiased",
     save_path: Union[str, None] = None,
@@ -102,7 +99,22 @@ def plot(
     print(f"Plotting {num_rows}x{num_cols} images")
     print("=" * 80)
 
-    figsize = (num_cols * size, num_rows * size)
+    heights, widths = [], []
+    for i, j in itertools.product(range(num_rows), range(num_cols)):
+        img = images[j][i] if vertical else images[i][j]
+        if img is None:
+            continue
+        heights.append(img.shape[0])
+        widths.append(img.shape[1])
+
+    height_avg, width_avg = np.mean(heights), np.mean(widths)
+    aspect_ratio = width_avg / height_avg
+
+    figsize = (
+        num_cols * (figsize[0] * aspect_ratio),
+        num_rows * (figsize[1] / aspect_ratio),
+    )
+
     _, axs = plt.subplots(
         num_rows,
         num_cols,
@@ -114,22 +126,28 @@ def plot(
     )
 
     for i, j in itertools.product(range(num_rows), range(num_cols)):
-        caption = None
+        img = images[j][i] if vertical else images[i][j]
+        if img is None:
+            continue
+
+        img_caption = None
         if captions is None:
-            caption = f"image[{i}][{j}]"
+            img_caption = f"image[{i}][{j}]"
 
         elif vertical:
-            caption = (
+            img_caption = (
                 captions[j][i]
                 if j < len(captions) and i < len(captions[j])
                 else f"image[{i}][{j}]"
             )
         else:
-            caption = (
+            img_caption = (
                 captions[i][j]
                 if i < len(captions) and j < len(captions[i])
                 else f"image[{i}][{j}]"
             )
+
+        utils.print_info(img, img_caption)
 
         if num_rows == 1 and num_cols == 1:
             ax = axs
@@ -140,26 +158,18 @@ def plot(
         else:
             ax = axs[i][j]
 
-        try:
-            image = images[j][i] if vertical else images[i][j]
-        except IndexError:
-            continue
-        utils.print_info(image, caption)
-
-        image = processing.adjust(image, **kwargs)
+        img = processing.adjust(img, **kwargs)
 
         if show_hist:
-            ax.hist(image.ravel(), bins=256)
+            ax.hist(img.ravel(), bins=256)
         else:
-            ax.imshow(np.squeeze(image), cmap=cmap, interpolation=interpolation)
+            ax.imshow(np.squeeze(img), cmap=cmap, interpolation=interpolation)
 
-        ax.axis("image")
-
-        ax.set_title(caption)
+        ax.set_title(img_caption)
         ax.set_axis_off()
 
-    if title != None:
-        plt.suptitle(title)
+    if suptitle != None:
+        plt.suptitle(suptitle)
 
     if save_path is not None:
         dir_path = os.path.dirname(save_path).strip()
