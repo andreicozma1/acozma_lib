@@ -99,22 +99,23 @@ def plot(
     print(f"Plotting {num_rows}x{num_cols} images")
     print("=" * 80)
 
-    heights, widths = [], []
-    for i, j in itertools.product(range(num_rows), range(num_cols)):
-        img = images[j][i] if vertical else images[i][j]
-        if img is None:
-            continue
-        # TODO: implement better way to get dimensions across types
-        img = np.array(img)
-        heights.append(img.shape[0])
-        widths.append(img.shape[1])
+    # heights, widths = [], []
+    # for i, j in itertools.product(range(num_rows), range(num_cols)):
+    #     img = images[j][i] if vertical else images[i][j]
+    #     if img is None:
+    #         continue
+    #     # TODO: implement better way to get dimensions across types
+    #     img = np.array(img)
+    #     heights.append(img.shape[0])
+    #     widths.append(img.shape[1])
 
-    height_avg, width_avg = np.mean(heights), np.mean(widths)
-    aspect_ratio = width_avg / height_avg
+    # height_avg, width_avg = np.mean(heights), np.mean(widths)
+    # aspect_ratio = width_avg / height_avg
+    # print(f"aspect_ratio: {aspect_ratio}")
 
     figsize = (
-        num_cols * (figsize[0] * aspect_ratio),
-        num_rows * (figsize[1] / aspect_ratio),
+        num_cols * figsize[0],
+        num_rows * figsize[1],
     )
 
     _, axs = plt.subplots(
