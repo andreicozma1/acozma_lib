@@ -1,7 +1,12 @@
 import numpy as np
 from numpy.fft import fft2, fftshift, ifft2, ifftshift
 
-from .utils import nextpow2
+
+def nextpow2(N):
+    n = 1
+    while n < N:
+        n *= 2
+    return n
 
 
 def get_fft(img, return_type="complex"):

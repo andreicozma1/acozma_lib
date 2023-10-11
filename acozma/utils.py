@@ -27,13 +27,6 @@ def min_max_scale(image):
     return (image - min_val) / (max_val - min_val)
 
 
-def nextpow2(N):
-    n = 1
-    while n < N:
-        n *= 2
-    return n
-
-
 @listify
 def get_normalized_filename(fname: str, has_extension: bool) -> str:
     """
