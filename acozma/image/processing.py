@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Union
 import numpy as np
 from skimage import exposure
 
-from .utils import print_info
+from .. import utils
 
 
 def apply(
@@ -42,7 +42,7 @@ def apply(
             zip(images, funcs, funcs_kwargs)
         ):
             image_proc = func(image, **func_kwargs)
-            print_info(image_proc, f"Image[{i}]")
+            utils.print_info(image_proc, f"Image[{i}]")
 
             image_proc = adjust(image_proc, **kwargs)
             processed_imgs.append(image_proc)
@@ -50,11 +50,11 @@ def apply(
     else:
         for i, image in enumerate(images):
             image_proc = image.copy()
-            print_info(image_proc, f"Image[{i}]")
+            utils.print_info(image_proc, f"Image[{i}]")
 
             for func, func_kwargs in zip(funcs, funcs_kwargs):
                 image_proc = func(image_proc, **func_kwargs)
-                print_info(image_proc)
+                utils.print_info(image_proc)
 
             image_proc = adjust(image_proc, **kwargs)
             processed_imgs.append(image_proc)
@@ -68,16 +68,16 @@ def apply(
     )
 
 
-def adjust(image, adjust_log=None, adjust_gamma=None, clip=None, **kwargs):
+def adjust(image, adjust_log=None, adjust_gamma=None, clip=None):
     if adjust_log is not None and adjust_log is not False:
         gain = 1 if adjust_log is True else adjust_log
         image = exposure.adjust_log(image, gain)
-        print_info(image, "adjust_log")
+        utils.print_info(image, "adjust_log")
 
     if adjust_gamma is not None and adjust_gamma is not False:
         gamma = 1 if adjust_gamma is True else adjust_gamma
         image = exposure.adjust_gamma(image, gamma)
-        print_info(image, "adjust_gamma")
+        utils.print_info(image, "adjust_gamma")
 
     if clip is not None:
         if clip is True:
@@ -89,6 +89,6 @@ def adjust(image, adjust_log=None, adjust_gamma=None, clip=None, **kwargs):
         elif isinstance(clip, (tuple, list)) and len(clip) > 2:
             clip = clip[:2]
         image = np.clip(image, clip[0], clip[1])
-        print_info(image, "clip")
+        utils.print_info(image, "clip")
 
     return image

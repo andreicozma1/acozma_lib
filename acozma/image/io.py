@@ -1,6 +1,6 @@
 import itertools
 import os
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -39,7 +39,7 @@ def read(
     return img
 
 
-def plot(
+def show(
     images: Union[IMAGE_TYPES, List[IMAGE_TYPES], List[List[IMAGE_TYPES]]],
     captions: Union[str, List[str], List[List[str]], None] = None,
     suptitle: Union[str, None] = None,
@@ -48,9 +48,8 @@ def plot(
     grid: bool = False,
     figsize=(5, 5),
     cmap="gray",
-    interpolation="antialiased",
+    interpolation="none",
     save_path: Union[str, None] = None,
-    size=4,
     **kwargs,
 ) -> None:
     if isinstance(images, IMAGE_TYPES):
@@ -118,6 +117,8 @@ def plot(
         num_rows * figsize[1],
     )
 
+    print(f"figsize: {figsize}")
+
     _, axs = plt.subplots(
         num_rows,
         num_cols,
@@ -168,6 +169,8 @@ def plot(
         else:
             ax.imshow(np.squeeze(img), cmap=cmap, interpolation=interpolation)
 
+        # set to image mode
+        ax.set_aspect("equal")
         ax.set_title(img_caption)
         ax.set_axis_off()
 
