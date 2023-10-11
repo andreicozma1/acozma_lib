@@ -1,37 +1,6 @@
-from typing import Tuple
 
-import cv2
 import numpy as np
 from skimage import filters
-
-
-def fake_blister(shape, axes, angle: int = 45):
-    kernel = np.zeros(shape, dtype=np.float32)
-    center_coordinate = (shape[0] // 2, shape[1] // 2)
-    startAngle, endAngle = 0, 360
-    color = (1, 1, 1)
-    thickness = -1
-    return cv2.ellipse(
-        kernel,
-        center_coordinate,
-        axes,
-        angle,
-        startAngle,
-        endAngle,
-        color,
-        thickness,
-    )
-
-
-def overlay(image: np.ndarray, shape: np.ndarray, position: Tuple[int, int]):
-    loc_u, loc_v = position
-    shape_u, shape_v = shape.shape
-
-    # blend the new shape with the image
-    image[loc_u : loc_u + shape_u, loc_v : loc_v + shape_v] = np.where(
-        shape == 0, image[loc_u : loc_u + shape_u, loc_v : loc_v + shape_v], shape
-    )
-    return image
 
 
 def get_gradients(image: np.ndarray):
