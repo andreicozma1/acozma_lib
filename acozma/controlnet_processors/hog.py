@@ -3,7 +3,7 @@ from PIL import Image, ImageOps
 from skimage import feature
 from skimage.util import img_as_float, img_as_ubyte
 
-from acozma.image.processors.utils import processor
+from .utils import processor
 
 
 @processor

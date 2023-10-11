@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageFilter
 
-from acozma.image.processors.utils import processor
+from .utils import processor
 
 
 @processor

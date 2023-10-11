@@ -1,8 +1,8 @@
 from PIL import Image, ImageChops, ImageEnhance, ImageOps
 
-from acozma.image.processors.canny import canny, rand_canny
-from acozma.image.processors.colorgrid import colorgrid, rand_colorgrid
-from acozma.image.processors.utils import processor
+from .canny import canny, rand_canny
+from .colorgrid import colorgrid, rand_colorgrid
+from .utils import processor
 
 
 def _canny_colorgrid_post(image_bg: Image.Image, image_fg: Image.Image):

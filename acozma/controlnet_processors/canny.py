@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image, ImageFilter, ImageOps
 
-from acozma.image.processors.utils import processor
+from .utils import processor
 
 
 @processor

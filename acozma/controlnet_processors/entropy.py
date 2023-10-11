@@ -4,7 +4,7 @@ from skimage import morphology
 from skimage.filters import rank
 from skimage.util import img_as_ubyte
 
-from acozma.image.processors.utils import processor
+from .utils import processor
 
 
 @processor

@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 
-from acozma.image.processors.utils import processor
+from .utils import processor
 
 _resampling_modes: list[int] = [
     Image.NEAREST,
