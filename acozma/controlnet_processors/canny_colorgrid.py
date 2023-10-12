@@ -26,17 +26,19 @@ def canny_colorgrid(
     color_image: Image.Image | None = None,
     **kwargs,
 ):
-    if color_image is None:
-        color_image = image
-    image_bg = colorgrid(color_image, **kwargs)
+    image_bg = colorgrid(color_image or image, **kwargs)
     image_fg = canny(image, **kwargs)
 
     return _canny_colorgrid_post(image_bg, image_fg)
 
 
-def rand_canny_colorgrid(image: Image.Image):
-    image_bg, colorgrid_params = rand_colorgrid(image)
-    image_fg, canny_params = rand_canny(image)
+def rand_canny_colorgrid(
+    image: Image.Image,
+    color_image: Image.Image | None = None,
+    **kwargs,
+):
+    image_bg, colorgrid_params = rand_colorgrid(color_image or image, **kwargs)
+    image_fg, canny_params = rand_canny(image, **kwargs)
 
     return (
         _canny_colorgrid_post(image_bg, image_fg),

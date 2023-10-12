@@ -40,10 +40,20 @@ def colorgrid(
     return image.convert("RGB")
 
 
-def rand_colorgrid(image: Image.Image):
+def rand_colorgrid(
+    image: Image.Image,
+    grid_size_bounds: tuple[int, int] = (5, 25),
+    **kwargs,
+):
+    grid_size_min, grid_size_max = grid_size_bounds
+    assert grid_size_min >= 5, "grid_size_min must be >= 5"
+    assert grid_size_max >= grid_size_min, "grid_size_max must be >= grid_size_min"
+
     params = {
-        "grid_size": np.random.randint(5, 25),
+        "grid_size": np.random.randint(grid_size_min, grid_size_max),
         "downsample": np.random.choice(_resampling_modes),
+        # TODO: Add kwargs to the rest of the functions
+        **kwargs,
     }
 
     res = colorgrid(image, **params)
