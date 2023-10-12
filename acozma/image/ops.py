@@ -5,15 +5,11 @@ from skimage import exposure, feature, filters, measure, morphology
 from skimage.util import img_as_float, img_as_ubyte
 
 
-def square_crop(image: Image.Image, shift: float | None = 0.5):
-    if shift is None:
-        shift = np.random.uniform(0, 1)
-
+def inner_square_crop(image: Image.Image, shift: float):
     assert 0.0 <= shift <= 1.0, "shift must be between 0 and 1"
 
     width, height = image.size
 
-    # print(width, height)
     # crop randomly along the longer dimension
     if width != height:
         if width > height:
@@ -31,3 +27,12 @@ def square_crop(image: Image.Image, shift: float | None = 0.5):
 
     assert image.width == image.height, "Internal Error: image must be square"
     return image
+
+
+def square_crop_center(image: Image.Image):
+    return inner_square_crop(image, 0.5)
+
+
+def square_crop_random(image: Image.Image):
+    shift = np.random.uniform(0, 1)
+    return inner_square_crop(image, shift)
