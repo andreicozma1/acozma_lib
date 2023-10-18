@@ -1,6 +1,9 @@
 import enum
 import math
 
+import numpy as np
+from PIL import Image
+
 
 class BBoxMode(str, enum.Enum):
     XYXY = "xyxy"
@@ -64,6 +67,30 @@ class BBox:
     @classmethod
     def from_xywh(cls, xywh: tuple[int, int, int, int], **kwargs):
         return cls(cls.xywh_to_xyxy(xywh), **kwargs)
+
+    @classmethod
+    def random_for_image(
+        cls,
+        image: Image.Image,
+        width_bounds: tuple[int, int],
+        height_bounds: tuple[int, int],
+        **kwargs,
+    ):
+        width_min, width_max = width_bounds
+        height_min, height_max = height_bounds
+        assert (
+            width_min < width_max
+        ), f"width_min >= width_max: {width_min} >= {width_max}"
+        assert (
+            height_min < height_max
+        ), f"height_min >= height_max: {height_min} >= {height_max}"
+
+        width = np.random.randint(width_min, width_max)
+        height = np.random.randint(height_min, height_max)
+
+        x = np.random.randint(0, image.width - width)
+        y = np.random.randint(0, image.height - height)
+        return cls.from_xywh((x, y, width, height), **kwargs)
 
     def rescale(self, scale: float):
         """

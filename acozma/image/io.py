@@ -45,17 +45,20 @@ def plot(
     suptitle: Union[str, None] = None,
     show_hist: bool = False,
     vertical: bool = False,
-    grid: bool = False,
     figsize=(5, 5),
     cmap="gray",
     interpolation="none",
     save_path: Union[str, None] = None,
     **kwargs,
 ) -> None:
+    autogrid = False
+
     if isinstance(images, IMAGE_TYPES):
         images = [[images]]
     elif isinstance(images[0], IMAGE_TYPES):
         images = [images]
+        # If it's a 1D grid we also autogrid
+        autogrid = True
     elif not isinstance(images[0][0], IMAGE_TYPES):
         raise ValueError(f"Invalid image type: {type(images[0][0])}")
 
@@ -67,7 +70,7 @@ def plot(
         elif not isinstance(captions[0][0], str):
             raise ValueError(f"Invalid caption type: {type(captions[0][0])}")
 
-    if not grid:
+    if not autogrid:
         num_rows = len(images)
         num_cols = len(images[0])
     else:
@@ -130,14 +133,17 @@ def plot(
     )
 
     for i, j in itertools.product(range(num_rows), range(num_cols)):
-        img = images[j][i] if vertical else images[i][j]
+        try:
+            img = images[j][i] if vertical else images[i][j]
+        except IndexError:
+            img = None
+        # skip blank spots (either intentionally set to None or due to autogrid)
         if img is None:
             continue
 
         img_caption = None
         if captions is None:
             img_caption = f"image[{i}][{j}]"
-
         elif vertical:
             img_caption = (
                 captions[j][i]
