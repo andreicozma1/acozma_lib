@@ -1,6 +1,5 @@
 from PIL import Image, ImageChops, ImageEnhance, ImageOps
 
-from .canny import canny, rand_canny
 from .colorgrid import colorgrid, rand_colorgrid
 from .contour import contour, rand_contour
 from .utils import processor
@@ -35,9 +34,13 @@ def contour_colorgrid(
     return _contour_colorgrid_post(image_bg, image_fg)
 
 
-def rand_contour_colorgrid(image: Image.Image):
-    image_bg, colorgrid_params = rand_colorgrid(image)
-    image_fg, canny_params = rand_contour(image)
+def rand_contour_colorgrid(
+    image: Image.Image,
+    color_image: Image.Image | None = None,
+    **kwargs,
+):
+    image_bg, colorgrid_params = rand_colorgrid(color_image or image, **kwargs)
+    image_fg, canny_params = rand_contour(image, **kwargs)
 
     return (
         _contour_colorgrid_post(image_bg, image_fg),

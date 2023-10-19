@@ -39,7 +39,7 @@ def contour(image: Image.Image, level: float | list[float] | None = None, **kwar
     return image.convert("RGB")
 
 
-def rand_contour(image: Image.Image):
+def rand_contour(image: Image.Image, **kwargs):
     num_levels = np.random.randint(1, 5)
 
     params = {
