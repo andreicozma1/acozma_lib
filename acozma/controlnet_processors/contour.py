@@ -44,6 +44,7 @@ def rand_contour(image: Image.Image, **kwargs):
 
     params = {
         "level": list(np.random.uniform(0.0, 1.0, size=num_levels)),
+        **kwargs,
     }
 
     res = contour(image, **params)

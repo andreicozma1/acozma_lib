@@ -1,10 +1,12 @@
+from enum import Enum
+
 import numpy as np
 from PIL import Image, ImageFilter
 
 from .utils import processor
 
 
-class Blur:
+class BlurFuncs(Enum):
     @staticmethod
     def gaussian(image: Image.Image, radius: int):
         return image.filter(ImageFilter.GaussianBlur(radius))
@@ -18,25 +20,38 @@ class Blur:
         if radius % 2 == 0:
             radius += 1
         return image.filter(ImageFilter.MedianFilter(radius))
-
+    
+    GAUSSIAN = (gaussian,)
+    BOX = (box,)
+    MEDIAN = (median,)
+    
+    def __call__(self, image: Image.Image, radius: int):
+        return self.value[0](image, radius)
+    
+    
 
 @processor
 def blur(
     image: Image.Image,
-    mode: str,
+    func: BlurFuncs,
     radius: int = 5,
     **kwargs,
 ):
     assert radius >= 0, "expected radius >= 0; got radius={radius}"
 
-    if radius != 0:
-        try:
-            image = getattr(Blur, mode)(image, radius)
-        except Exception as e:
-            print(f"Params: {mode}, {radius}")
-            raise e
+    if radius == 0:
+        return image
+    
+    if isinstance(func, str):
+        func = BlurFuncs[func]
+        
+    try:
+        image = func(image, radius)
+    except Exception as e:
+        print(f"Params: {func}, {radius}")
+        raise e
 
-    return image.convert("RGB")
+    return image
 
 
 def rand_blur(
@@ -51,8 +66,10 @@ def rand_blur(
     ), "expected radius_max >= radius_min; got radius_max={radius_max}, radius_min={radius_min}"
 
     # TODO: Scale random radius based on image size. 0-15 is good for 512x512
+    
     params = {
-        "mode": np.random.choice(list([x for x in dir(Blur) if not x.startswith("_")])),
+        "func": np.random.choice(BlurFuncs._member_names_),
+        # "func": np.random.choice(BlurFuncs),
         "radius": np.random.randint(radius_min, radius_max),
         **kwargs,
     }

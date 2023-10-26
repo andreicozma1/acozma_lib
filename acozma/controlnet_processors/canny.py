@@ -2,8 +2,20 @@ import cv2
 import numpy as np
 from PIL import Image, ImageFilter, ImageOps
 
+from .blur import BlurFuncs
 from .utils import processor
 
+
+def _verify_tresholds(low_threshold, high_threshold):
+    assert (
+        0 <= low_threshold <= 255
+    ), f"expected 0 <= low_threshold <= 255; got low_threshold={low_threshold}"
+    assert (
+        0 <= high_threshold <= 255
+    ), f"expected 0 <= high_threshold <= 255; got high_threshold={high_threshold}"
+    assert (
+        low_threshold < high_threshold
+    ), f"expected low_threshold < high_threshold; got low_threshold={low_threshold}, high_threshold={high_threshold}"
 
 @processor
 def canny(
@@ -16,12 +28,14 @@ def canny(
     assert sigma > 0.0, f"sigma must be positive, got {sigma}"
 
     # apply gaussian blur
-    image = image.filter(ImageFilter.GaussianBlur(radius=sigma))
+    # image = image.filter(ImageFilter.GaussianBlur(radius=sigma))
+    image = BlurFuncs.GAUSSIAN(image, sigma)
 
     # image = ImageOps.autocontrast(image)
 
     image = np.array(image)
 
+    # Auto thresholding for low_threshold and high_threshold
     if low_threshold is None:
         # auto pick based on median
         median = np.median(image)
@@ -34,14 +48,8 @@ def canny(
         high_threshold = int(min(255, (1.0 + sigma) * median))
         print("high_threshold:", high_threshold, "(auto)")
 
-    assert (
-        0 <= low_threshold < 255
-    ), f"expected 0 <= low_threshold < 255; got low_threshold={low_threshold}"
-    assert (
-        0 < high_threshold <= 255
-    ), f"expected 0 < high_threshold <= 255; got high_threshold={high_threshold}"
+    _verify_tresholds(low_threshold, high_threshold)
 
-    # TODO: Auto thresholding for low_threshold and high_threshold
     image = cv2.Canny(image, low_threshold, high_threshold)
 
     image = Image.fromarray(image)
@@ -55,24 +63,16 @@ def rand_canny(
     **kwargs,
 ):
     threshold_min, threshold_max = threshold_bounds
-    assert (
-        0 <= threshold_min < 255
-    ), f"expected 0 <= threshold_min < 255; got threshold_min={threshold_min}"
-    assert (
-        0 < threshold_max <= 255
-    ), f"expected 0 < threshold_max <= 255; got threshold_max={threshold_max}"
-    assert (
-        threshold_min < threshold_max
-    ), f"expected threshold_min < threshold_max; got threshold_min={threshold_min}, threshold_max={threshold_max}"
+    _verify_tresholds(threshold_min, threshold_max)
 
     # TODO: Fix 200 here
-    low_threshold: int = np.random.randint(threshold_min, 200)
+    low_threshold: int = np.random.randint(threshold_min, threshold_max - 1)
 
     params = {
         # TODO: Add sigma bounds
         "sigma": np.random.uniform(0.6, 2.4),
         "low_threshold": low_threshold,
-        "high_threshold": np.random.randint(254 - low_threshold, threshold_max),
+        "high_threshold": np.random.randint(low_threshold + 1, threshold_max),
         **kwargs,
     }
 

@@ -33,10 +33,11 @@ def hog(image: Image.Image, orientations: int = 4, pixels_per_cell: int = 9, **k
     return hog_image.convert("RGB")
 
 
-def rand_hog(image: Image.Image):
+def rand_hog(image: Image.Image, **kwargs):
     params = {
         "orientations": np.random.randint(4, 9),
         "pixels_per_cell": np.random.randint(5, 12),
+        **kwargs,
     }
 
     res = hog(image, **params)

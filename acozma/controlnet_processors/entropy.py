@@ -31,9 +31,10 @@ def entropy(img, radius: int = 5, **kwargs):
     return img
 
 
-def rand_entropy(image: Image.Image):
+def rand_entropy(image: Image.Image, **kwargs):
     params = {
-        "radius": np.random.randint(3, 15),
+        "radius": np.random.randint(3, 10),
+        **kwargs,
     }
 
     res = entropy(image, **params)
