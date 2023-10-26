@@ -6,3 +6,4 @@ from .contour import *
 from .contour_colorgrid import *
 from .entropy import *
 from .hog import *
+from .utils import *

@@ -1,4 +1,5 @@
 from PIL import Image
+from torchvision.transforms import v2
 
 
 def processor(func):
@@ -23,3 +24,16 @@ def params_to_str(params: dict):
     return ",".join(
         f"{k}={round(v, 2) if isinstance(v, float) else v}" for k, v in params.items()
     )
+
+
+def rand_colorjitter(image: Image.Image, **kwargs):
+    params = {
+        "hue":(-0.5, 0.5),
+        "saturation":(0.5, 1.5),
+        "brightness":(0.5, 1.5),
+        "contrast":(0.5, 1.5),
+        **kwargs,
+    }
+    image = v2.ColorJitter(**params)(image)
+    return image, params
+    
