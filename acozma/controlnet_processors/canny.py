@@ -29,7 +29,7 @@ def canny(
 
     # apply gaussian blur
     # image = image.filter(ImageFilter.GaussianBlur(radius=sigma))
-    image = BlurFuncs.GAUSSIAN(image, sigma)
+    image = BlurFuncs.gaussian(image, sigma)
 
     # image = ImageOps.autocontrast(image)
 
