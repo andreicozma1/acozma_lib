@@ -60,17 +60,21 @@ def canny(
 def rand_canny(
     image: Image.Image,
     threshold_bounds: tuple[int, int] = (0, 255),
+    sigma_bounds: tuple[float, float] = (0.6, 2.4),
     **kwargs,
 ):
     threshold_min, threshold_max = threshold_bounds
     _verify_tresholds(threshold_min, threshold_max)
+    
+    sigma_min, sigma_max = sigma_bounds
+    assert sigma_min > 0.0, f"expected sigma_min > 0.0; got {sigma_min}"
+    assert sigma_max > sigma_min, f"expected sigma_max > sigma_min; got {sigma_max} <= {sigma_min}"
 
-    # TODO: Fix 200 here
     low_threshold: int = np.random.randint(threshold_min, threshold_max - 1)
 
     params = {
         # TODO: Add sigma bounds
-        "sigma": np.random.uniform(0.6, 2.4),
+        "sigma": np.random.uniform(sigma_min, sigma_max),
         "low_threshold": low_threshold,
         "high_threshold": np.random.randint(low_threshold + 1, threshold_max),
         **kwargs,

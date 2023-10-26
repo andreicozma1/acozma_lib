@@ -8,7 +8,7 @@ from .utils import processor
 
 class BlurFuncs:
     @staticmethod
-    def gaussian(image: Image.Image, radius: int) -> Image.Image:
+    def gaussian(image: Image.Image, radius: float) -> Image.Image:
         return image.filter(ImageFilter.GaussianBlur(radius))
 
     @staticmethod
