@@ -20,12 +20,12 @@ class BlurFuncs:
         if radius % 2 == 0:
             radius += 1
         return image.filter(ImageFilter.MedianFilter(radius))
-    
+
 
 @processor
 def blur(
     image: Image.Image,
-    func: str,
+    func: str = "gaussian",
     radius: int = 5,
     **kwargs,
 ):
@@ -33,7 +33,7 @@ def blur(
 
     if radius == 0:
         return image
-    
+
     try:
         image = getattr(BlurFuncs, func.lower())(image, radius)
     except Exception as e:
@@ -55,7 +55,9 @@ def rand_blur(
     ), "expected radius_max >= radius_min; got radius_max={radius_max}, radius_min={radius_min}"
 
     # TODO: Scale random radius based on image size. 0-15 is good for 512x512
-    func_names = [func_name for func_name in dir(BlurFuncs) if not func_name.startswith("_")]
+    func_names = [
+        func_name for func_name in dir(BlurFuncs) if not func_name.startswith("_")
+    ]
     params = {
         "func": np.random.choice(func_names),
         # "func": np.random.choice(BlurFuncs),
