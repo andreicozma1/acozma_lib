@@ -11,8 +11,7 @@ def colorgrid_contour(
     color_image: Image.Image | None = None,
     **kwargs,
 ):
-    if color_image is None:
-        color_image = image
+    color_image = color_image or image
     image_bg = colorgrid(color_image, **kwargs)
     image_fg = contour(image, **kwargs)
 
@@ -24,7 +23,8 @@ def rand_colorgrid_contour(
     color_image: Image.Image | None = None,
     **kwargs,
 ):
-    image_bg, colorgrid_params = rand_colorgrid(color_image or image, **kwargs)
+    color_image = color_image or image
+    image_bg, colorgrid_params = rand_colorgrid(color_image, **kwargs)
     image_fg, canny_params = rand_contour(image, **kwargs)
 
     return (

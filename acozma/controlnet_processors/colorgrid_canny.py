@@ -11,7 +11,8 @@ def colorgrid_canny(
     color_image: Image.Image | None = None,
     **kwargs,
 ):
-    image_bg = colorgrid(color_image or image, **kwargs)
+    color_image = color_image or image
+    image_bg = colorgrid(color_image, **kwargs)
     image_fg = canny(image, **kwargs)
 
     return colorgrid_blend_fg(image_bg, image_fg)
@@ -22,7 +23,9 @@ def rand_colorgrid_canny(
     color_image: Image.Image | None = None,
     **kwargs,
 ):
-    image_bg, colorgrid_params = rand_colorgrid(color_image or image, **kwargs)
+    color_image = color_image or image
+
+    image_bg, colorgrid_params = rand_colorgrid(color_image, **kwargs)
     image_fg, canny_params = rand_canny(image, **kwargs)
 
     return (

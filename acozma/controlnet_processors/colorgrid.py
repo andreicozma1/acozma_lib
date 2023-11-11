@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image, ImageChops, ImageEnhance, ImageOps
 
-from .utils import processor
+from .utils import processor, rand_colorjitter, ControlNetProcessorMode
 
 _resampling_modes: list[int] = [
     Image.NEAREST,
@@ -44,11 +44,16 @@ def colorgrid(
 def rand_colorgrid(
     image: Image.Image,
     grid_size_bounds: tuple[int, int] = (5, 25),
+    rand_mode: ControlNetProcessorMode = ControlNetProcessorMode.TRAIN,
     **kwargs,
 ):
     grid_size_min, grid_size_max = grid_size_bounds
     assert grid_size_min >= 5, "grid_size_min must be >= 5"
     assert grid_size_max >= grid_size_min, "grid_size_max must be >= grid_size_min"
+
+    # if the mode is TEST, we want to apply random colorjitter to the color image
+    if rand_mode == ControlNetProcessorMode.TEST:
+        image, _ = rand_colorjitter(image, **kwargs)
 
     params = {
         "grid_size": np.random.randint(grid_size_min, grid_size_max),
@@ -74,6 +79,7 @@ def _colorgrid_blend_fg_v1(image_bg: Image.Image, image_fg: Image.Image):
     return ImageChops.composite(
         image_bg, image_fg_new, ImageOps.invert(image_fg.convert("1"))
     )
+
 
 def _colorgrid_blend_fg_v2(image_bg: Image.Image, image_fg: Image.Image):
     image_bg = image_bg.convert("CMYK")

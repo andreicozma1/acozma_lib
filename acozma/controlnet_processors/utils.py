@@ -1,5 +1,11 @@
+from enum import Enum
 from PIL import Image
 from torchvision.transforms import v2
+
+
+class ControlNetProcessorMode(Enum):
+    TRAIN = 0
+    TEST = 1
 
 
 def processor(func):
@@ -28,12 +34,11 @@ def params_to_str(params: dict):
 
 def rand_colorjitter(image: Image.Image, **kwargs):
     params = {
-        "hue":(-0.5, 0.5),
-        "saturation":(0.5, 1.5),
-        "brightness":(0.5, 1.5),
-        "contrast":(0.5, 1.5),
+        "hue": (-0.5, 0.5),
+        "saturation": (0.5, 1.5),
+        "brightness": (0.5, 1.5),
+        "contrast": (0.5, 1.5),
         **kwargs,
     }
     image = v2.ColorJitter(**params)(image)
     return image, params
-    
