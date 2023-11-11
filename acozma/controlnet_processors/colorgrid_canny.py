@@ -6,7 +6,7 @@ from .utils import processor
 
 
 @processor
-def canny_colorgrid(
+def colorgrid_canny(
     image: Image.Image,
     color_image: Image.Image | None = None,
     **kwargs,
@@ -17,7 +17,7 @@ def canny_colorgrid(
     return colorgrid_blend_fg(image_bg, image_fg)
 
 
-def rand_canny_colorgrid(
+def rand_colorgrid_canny(
     image: Image.Image,
     color_image: Image.Image | None = None,
     **kwargs,

@@ -6,7 +6,7 @@ from .utils import processor
 
 
 @processor
-def contour_colorgrid(
+def colorgrid_contour(
     image: Image.Image,
     color_image: Image.Image | None = None,
     **kwargs,
@@ -19,7 +19,7 @@ def contour_colorgrid(
     return colorgrid_blend_fg(image_bg, image_fg)
 
 
-def rand_contour_colorgrid(
+def rand_colorgrid_contour(
     image: Image.Image,
     color_image: Image.Image | None = None,
     **kwargs,
