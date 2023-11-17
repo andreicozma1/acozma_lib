@@ -9,7 +9,9 @@ from PIL import Image
 from skimage import io, transform
 from skimage.util import img_as_float32, img_as_ubyte
 
+
 from . import processing, utils
+from .info import ImageInfo
 
 SMALL_SIZE = 8
 MEDIUM_SIZE = 10
@@ -199,6 +201,7 @@ def plot(
     captions: Optional[Union[str, List[str]]] = None,
     suptitle: Optional[str] = None,
     show_hist: bool = False,
+    grid=False,
     figsize=(8, 8),
     save_path: Optional[str] = None,
     **imshow_kwargs,
@@ -227,8 +230,12 @@ def plot(
     imshow_kwargs.setdefault("interpolation", "antialiased")
 
     print("=" * 80)
-    print(f"Plotting")
+    print(f"Plotting: {suptitle}")
     print("=" * 80)
+
+    num_images = len(images)
+
+    print("num_images:", num_images)
 
     heights, widths = [], []
     for img in images:
@@ -237,14 +244,23 @@ def plot(
         widths.append(img.shape[1])
 
     avg_height, avg_width = np.mean(heights), np.mean(widths)
-    avg_aspect_ratio = avg_width / avg_height
+    avg_dims = (avg_height, avg_width)
 
-    print(f"aspect_ratio: {avg_aspect_ratio}")
+    print(f"avg_dims: {avg_dims}")
+
+    avg_aspect_ratio = avg_width / avg_height
+    print(f"avg_aspect_ratio: {avg_aspect_ratio}")
+
+    if grid:
+        # make into a square grid if possible but always show all images
+        grid_h = int(np.sqrt(num_images))
+        grid_w = int(np.ceil(num_images / grid_h))
 
     # if avg_aspect_ratio > 1:
     #     grid_h, grid_w = grid_w, grid_h
 
-    print(f"grid_h: {grid_h} | grid_w: {grid_w}")
+    gridsize = (grid_h, grid_w)
+    print(f"gridsize: {gridsize}")
 
     figsize = (
         figsize[0] * grid_w * np.sqrt(avg_aspect_ratio),
