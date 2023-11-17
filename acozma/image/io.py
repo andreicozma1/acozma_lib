@@ -39,7 +39,7 @@ def read(
     return img
 
 
-def plot(
+def plot_old(
     images: Union[IMAGE_TYPES, List[IMAGE_TYPES], List[List[IMAGE_TYPES]]],
     captions: Union[str, List[str], List[List[str]], None] = None,
     suptitle: Union[str, None] = None,
@@ -191,3 +191,164 @@ def plot(
         plt.savefig(save_path)
 
     plt.show()
+
+
+def plot(
+    images: Union[IMAGE_TYPES, List[IMAGE_TYPES]],
+    captions: Optional[Union[str, List[str]]] = None,
+    suptitle: Optional[str] = None,
+    show_hist: bool = False,
+    figsize=(8, 8),
+    save_path: Optional[str] = None,
+    **imshow_kwargs,
+) -> None:
+    # if not a list make it a list
+    if not isinstance(images, list):
+        images = [images]
+
+    if isinstance(images[0], list):
+        grid_h, grid_w = len(images), len(images[0])
+        images = list(itertools.chain.from_iterable(images))
+    elif len(images) <= 4:
+        grid_h, grid_w = 1, len(images)
+    else:
+        grid_h, grid_w = len(images), 1
+
+    if captions is None:
+        captions = [f"Image {i + 1}" for i in range(len(images))]
+
+    if not isinstance(captions, list):
+        captions = [captions]
+
+    if isinstance(captions[0], list):
+        captions = list(itertools.chain.from_iterable(captions))
+
+    imshow_kwargs.setdefault("interpolation", "antialiased")
+
+    print("=" * 80)
+    print(f"Plotting")
+    print("=" * 80)
+
+    heights, widths = [], []
+    for img in images:
+        img = np.array(img)
+        heights.append(img.shape[0])
+        widths.append(img.shape[1])
+
+    avg_height, avg_width = np.mean(heights), np.mean(widths)
+    avg_aspect_ratio = avg_width / avg_height
+
+    print(f"aspect_ratio: {avg_aspect_ratio}")
+
+    # if avg_aspect_ratio > 1:
+    #     grid_h, grid_w = grid_w, grid_h
+
+    print(f"grid_h: {grid_h} | grid_w: {grid_w}")
+
+    figsize = (
+        figsize[0] * grid_w * np.sqrt(avg_aspect_ratio),
+        figsize[1] * grid_h / np.sqrt(avg_aspect_ratio),
+    )
+
+    print(f"figsize: {figsize}")
+
+    fig = plt.figure(
+        figsize=figsize,
+        constrained_layout=True,
+    )
+
+    for i, (img, img_caption) in enumerate(zip(images, captions)):
+        if img is None:
+            continue
+        if img_caption is None:
+            img_caption = f"Image {i + 1}"
+
+        ax = fig.add_subplot(grid_h, grid_w, i + 1)
+        ax.set_title(img_caption)
+
+        img_info = ImageInfo.from_any(img)
+        ax.set_xlabel(str(img_info))
+
+        # print(f" - {img_caption}: {img_info}")
+
+        if show_hist:
+            plot_img_hist(img, ax)
+        else:
+            ax.imshow(
+                img,
+                # np.squeeze(img),
+                **imshow_kwargs,
+            )
+            # ax.set_aspect("equal")
+
+        plt.colorbar(
+            ax.images[0],
+            ax=ax,
+            shrink=0.75,
+            pad=0.01,
+            orientation="horizontal",
+        )
+
+    if suptitle != None:
+        plt.suptitle(suptitle)
+
+    if save_path is not None:
+        plt.savefig(save_path)
+
+    plt.show()
+    plt.close()
+
+
+def plot_img_hist(img: np.ndarray, ax):
+    match img.ndim:
+        case 3:
+            colors = ("r", "g", "b")
+            for channel_id, color in enumerate(colors):
+                ax.hist(
+                    img[:, :, channel_id].ravel(),
+                    bins=256,
+                    density=False,
+                    color=color,
+                    alpha=0.333,
+                )
+        case 2:
+            ax.hist(
+                img.ravel(),
+                bins=256,
+                density=False,
+                color="gray",
+            )
+        case _:
+            raise ValueError(f"Invalid image shape: {img.shape}")
+
+
+class DiffMode(str, Enum):
+    DIFF = "Difference"
+    ABSOLUTE = "Absolute Difference"
+    SQUARED = "Squared Difference"
+
+
+def plot_diff(
+    img_1,
+    img_2,
+    mode: DiffMode = DiffMode.DIFF,
+    **kwargs,
+):
+    img_1 = img_1.astype(np.float32)
+    img_2 = img_2.astype(np.float32)
+
+    match mode:
+        case DiffMode.DIFF:
+            diff = img_1 - img_2
+        case DiffMode.ABSOLUTE:
+            diff = np.abs(img_1 - img_2)
+        case DiffMode.SQUARED:
+            diff = (img_1 - img_2) ** 2
+        case _:
+            raise ValueError(f"Invalid mode: {mode}")
+
+    plot(
+        [img_1, img_2, diff],
+        ["Image 1", "Image 2", mode],
+        **kwargs,
+    )
