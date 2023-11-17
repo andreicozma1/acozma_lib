@@ -1,3 +1,4 @@
+from enum import Enum
 import itertools
 import os
 from typing import Callable, List, Optional, Tuple, Union
