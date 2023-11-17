@@ -5,3 +5,4 @@ scikit-image
 matplotlib
 tabulate
 pycocotools
+torchvision
