@@ -6,3 +6,5 @@ matplotlib
 tabulate
 pycocotools
 torchvision
+
+umap-learn

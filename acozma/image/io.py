@@ -201,8 +201,9 @@ def plot(
     captions: Optional[Union[str, List[str]]] = None,
     suptitle: Optional[str] = None,
     show_hist: bool = False,
-    grid=False,
-    figsize=(8, 8),
+    grid: bool = False,
+    gridsize: Optional[Tuple[int, int]] = None,
+    figsize: Optional[Tuple[int, int]] = (8, 8),
     save_path: Optional[str] = None,
     **imshow_kwargs,
 ) -> None:
@@ -217,6 +218,9 @@ def plot(
         grid_h, grid_w = 1, len(images)
     else:
         grid_h, grid_w = len(images), 1
+
+    if gridsize is not None:
+        grid_h, grid_w = gridsize
 
     if captions is None:
         captions = [f"Image {i + 1}" for i in range(len(images))]
