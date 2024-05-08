@@ -19,20 +19,20 @@ def _print_with_separator(*values, sep: str, sz: Union[str, int] = "lg", **kwarg
 
 
 def hr1(*values, **kwargs):
-    _print_with_separator(*values, sep="#", **kwargs)
+    _print_with_separator(*values, **(dict(sep="#") | kwargs))
 
 
 def hr2(*values, **kwargs):
-    _print_with_separator(*values, sep="=", **kwargs)
+    _print_with_separator(*values, **(dict(sep="=", **kwargs)))
 
 
 def hr3(*values, **kwargs):
-    _print_with_separator(*values, sep="~", **kwargs)
+    _print_with_separator(*values, **(dict(sep="~") | kwargs))
 
 
 def hr4(*values, **kwargs):
-    _print_with_separator(*values, sep="-", **kwargs)
+    _print_with_separator(*values, **(dict(sep="-") | kwargs))
 
 
 def hr5(*values, **kwargs):
-    _print_with_separator(*values, sep="*", **kwargs)
+    _print_with_separator(*values, **(dict(sep="*") | kwargs))
