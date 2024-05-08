@@ -5,7 +5,7 @@ from pprint import pprint as _pprint
 from pprint import pformat as _pformat
 
 pprint_default_kwargs = dict(
-    depth=2, width=30, sort_dicts=False, compact=True, underscore_numbers=True
+    width=30, sort_dicts=False, compact=True, underscore_numbers=True
 )
 
 pprint = lambda *args, **kwargs: _pprint(
