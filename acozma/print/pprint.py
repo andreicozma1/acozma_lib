@@ -19,9 +19,9 @@ __pprint_width_map = {"xs": 20, "sm": 40, "md": 60, "lg": 80, "xl": 100}
 __pprint_level_map = {1: "#", 2: "=", 3: "*", 4: "~", 5: "-"}
 
 
-def pprint_sep(*values, level: int = 1, width: Union[str, int] = "lg", **kwargs):
+def pprint_sep(*args, level: int = 1, width: Union[str, int] = "lg", **kwargs):
     if isinstance(width, str):
         width = __pprint_width_map[width]
     print(__pprint_level_map[level] * width)
-    if values:
-        pprint(*values, **kwargs)
+    if args:
+        pprint(*args, **kwargs)
